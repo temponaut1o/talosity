@@ -1,0 +1,9 @@
+.env.example
+node_modules
+.next
+dist
+.DS_Store
+*.pem
+.env
+.env.local
+.env.*.local
