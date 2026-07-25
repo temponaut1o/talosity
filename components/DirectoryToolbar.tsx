@@ -1,6 +1,7 @@
 'use client';
 
 import { Search, SlidersHorizontal } from 'lucide-react';
+import { TalosityLogo } from './TalosityLogo';
 
 interface DirectoryToolbarProps {
   searchTerm: string;
@@ -49,11 +50,16 @@ export function DirectoryToolbar({
 }: DirectoryToolbarProps) {
   return (
     <section className="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-4 shadow-sm sm:p-6">
-      <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-600">
-        <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2">
-          <SlidersHorizontal className="h-4 w-4" />
-          Search and filter
-        </span>
+      <div className="flex flex-wrap items-center justify-between gap-3 text-sm font-medium text-slate-600">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="rounded-full border border-slate-200 bg-white px-3 py-2 shadow-sm">
+            <TalosityLogo compact className="gap-2" iconClassName="h-8 w-8" textClassName="text-[0.92rem]" />
+          </div>
+          <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2">
+            <SlidersHorizontal className="h-4 w-4" />
+            Search and filter
+          </span>
+        </div>
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
