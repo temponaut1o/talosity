@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: light;
+}
+
 * {
-  @apply border-border;
+  box-sizing: border-box;
 }
 
 html {
@@ -11,5 +15,6 @@ html {
 }
 
 body {
-  @apply bg-white text-gray-900;
+  @apply bg-slate-50 text-slate-900 antialiased;
+  font-family: Arial, Helvetica, sans-serif;
 }
