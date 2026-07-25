@@ -1,10 +1,14 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { CategoryNav } from '@/components/CategoryNav';
 import { CompanyCard } from '@/components/CompanyCard';
 import { RobotCard } from '@/components/RobotCard';
+import { NewsCard } from '@/components/news/NewsCard';
+import { TalosityLogo } from '@/components/TalosityLogo';
 import { categorySummary, companies, industries, robots } from '@/lib/placeholder-data';
+import { newsArticles } from '@/data/news/articles';
 import type { IndustryKey } from '@/lib/types';
 
 export default function Home() {
@@ -29,21 +33,31 @@ export default function Home() {
         <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white/80 p-8 shadow-[0_20px_80px_-24px_rgba(15,23,42,0.3)] backdrop-blur sm:p-10 lg:p-14">
           <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-slate-500">Talosity Robotics</p>
+              <div className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50/80 px-3 py-2">
+                <TalosityLogo compact className="" />
+              </div>
               <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
                 Industrial robotics intelligence for modern operations.
               </h1>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-                Discover commercial cleaning, warehouse automation, construction, and medical robotics companies in one structured directory built for enterprise research.
+                Discover commercial robotics companies, autonomous systems, and industrial automation platforms with the clarity expected by engineering teams and enterprise buyers.
               </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a href="/directory" className="rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800">
+                  Explore Robotics Directory
+                </a>
+                <a href="/news" className="rounded-full border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
+                  View Intelligence Feed
+                </a>
+              </div>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-950 p-6 text-white">
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">MVP foundation</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">Platform overview</p>
               <ul className="mt-4 space-y-3 text-sm text-slate-300">
-                <li>• Reusable robotics and company cards</li>
-                <li>• Category-based navigation and placeholder data</li>
-                <li>• Supabase-ready structure for future expansion</li>
+                <li>• Commercial cleaning and facility robotics</li>
+                <li>• Warehouse automation and AMR platforms</li>
+                <li>• Construction and medical robotics profiles</li>
               </ul>
             </div>
           </div>
@@ -93,6 +107,24 @@ export default function Home() {
                 <RobotCard key={robot.id} robot={robot} company={companyLookup.get(robot.companyId)} />
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="rounded-[2rem] border border-slate-200 bg-white/80 p-6 shadow-sm backdrop-blur sm:p-8">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-slate-500">Latest robotics intelligence</p>
+              <h2 className="mt-2 text-2xl font-semibold text-slate-950">Enterprise research updates</h2>
+            </div>
+            <Link href="/news" className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
+              View all intelligence
+            </Link>
+          </div>
+
+          <div className="mt-6 grid gap-5 lg:grid-cols-3">
+            {newsArticles.slice(0, 3).map((article) => (
+              <NewsCard key={article.id} article={article} />
+            ))}
           </div>
         </section>
       </div>

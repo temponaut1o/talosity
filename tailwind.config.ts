@@ -8,7 +8,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', 'Arial', 'Helvetica', 'sans-serif'],
+        sans: ['var(--font-inter)', 'var(--font-ibm-plex-sans)', 'Arial', 'Helvetica', 'sans-serif'],
+        mono: ['var(--font-ibm-plex-mono)', 'monospace'],
       },
       colors: {
         brand: {
