@@ -1,6 +1,8 @@
 import { CRMCard } from '@/components/crm/CRMCard';
 import { listAnalyticsSnapshots } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AnalyticsPage() {
   const analytics = await listAnalyticsSnapshots();
 

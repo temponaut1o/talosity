@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { loginAction } from '@/app/login/actions';
 import { createSupabaseAuthServerClient } from '@/lib/supabase/auth-server';
 
+export const dynamic = 'force-dynamic';
+
 interface LoginPageProps {
   searchParams?: {
     next?: string;
@@ -14,7 +16,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const supabase = createSupabaseAuthServerClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = supabase ? await supabase.auth.getUser() : { data: { user: null } };
 
   const nextPath = searchParams?.next || '/admin';
   const error = searchParams?.error;

@@ -9,6 +9,9 @@ export async function loginAction(formData: FormData) {
   const nextPath = String(formData.get('next') ?? '/admin');
 
   const supabase = createSupabaseAuthServerClient();
+  if (!supabase) {
+    redirect(`/login?error=${encodeURIComponent('Supabase authentication is not configured.')}&next=${encodeURIComponent(nextPath)}`);
+  }
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
@@ -20,6 +23,8 @@ export async function loginAction(formData: FormData) {
 
 export async function logoutAction() {
   const supabase = createSupabaseAuthServerClient();
-  await supabase.auth.signOut();
+  if (supabase) {
+    await supabase.auth.signOut();
+  }
   redirect('/login');
 }

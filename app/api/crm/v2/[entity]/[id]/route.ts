@@ -3,6 +3,8 @@ import { ZodError, z } from 'zod';
 import { entityNameSchema } from '@/lib/crm/knowledge-graph-schemas';
 import { deleteRecord, getRecord, updateRecord } from '@/lib/crm/knowledge-graph-repository';
 
+export const dynamic = 'force-dynamic';
+
 const idSchema = z.string().uuid();
 
 interface Params {

@@ -6,6 +6,8 @@ import { createLeadAction, deleteLeadAction, updateLeadStatusAction } from '@/ap
 import { listCompanies, listLeads } from '@/lib/crm/repository';
 import type { LeadRecord } from '@/lib/crm/types';
 
+export const dynamic = 'force-dynamic';
+
 const leadStatuses = ['new', 'contacted', 'qualified', 'vendor-matched', 'proposal', 'closed-won', 'closed-lost'];
 
 export default async function LeadsPage() {

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createVendorRequest, deleteVendorRequest, listVendorRequests, updateVendorRequest } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const requests = await listVendorRequests();
   return NextResponse.json(requests);

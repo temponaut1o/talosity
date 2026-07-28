@@ -4,6 +4,8 @@ import { createRobotAction, deleteRobotAction } from '@/app/admin/crm/actions';
 import { listCompanies, listRobots } from '@/lib/crm/repository';
 import type { RobotRecord } from '@/lib/crm/types';
 
+export const dynamic = 'force-dynamic';
+
 export default async function RobotsPage() {
   const [robots, companies] = await Promise.all([listRobots(), listCompanies()]);
 

@@ -1,6 +1,8 @@
 import { CRMCard } from '@/components/crm/CRMCard';
 import { countTable } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 export default async function SettingsPage() {
   const [companyCount, robotCount, leadCount, relationshipCount] = await Promise.all([
     countTable('companies'),

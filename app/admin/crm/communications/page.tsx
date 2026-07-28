@@ -4,6 +4,8 @@ import { createCommunicationAction } from '@/app/admin/crm/actions';
 import { listCommunications } from '@/lib/crm/repository';
 import type { CommunicationRecord } from '@/lib/crm/types';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CommunicationsPage() {
   const items = await listCommunications();
 

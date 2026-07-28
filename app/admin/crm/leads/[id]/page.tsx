@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { CRMCard } from '@/components/crm/CRMCard';
 import { getLeadById } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 interface LeadDetailPageProps {
   params: { id: string };
 }

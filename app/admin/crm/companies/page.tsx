@@ -5,6 +5,8 @@ import { createCompanyAction, deleteCompanyAction } from '@/app/admin/crm/action
 import { listCompanies } from '@/lib/crm/repository';
 import type { CompanyRecord } from '@/lib/crm/types';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CompaniesPage() {
   const companies = await listCompanies();
 

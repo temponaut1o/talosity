@@ -2,6 +2,8 @@ import { CRMCard } from '@/components/crm/CRMCard';
 import { createDocumentAction } from '@/app/admin/crm/actions';
 import { listDocuments, listRobots } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DocumentsPage() {
   const [documents, robots] = await Promise.all([listDocuments(), listRobots()]);
 

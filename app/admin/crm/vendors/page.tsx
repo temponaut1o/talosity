@@ -4,6 +4,8 @@ import { createVendorRequestAction, deleteVendorRequestAction, updateVendorReque
 import { listCompanies, listVendorRequests } from '@/lib/crm/repository';
 import type { VendorRequestRecord } from '@/lib/crm/types';
 
+export const dynamic = 'force-dynamic';
+
 export default async function VendorsPage() {
   const [requests, companies] = await Promise.all([listVendorRequests(), listCompanies()]);
   const pendingCount = requests.filter((request) => request.status === 'pending').length;

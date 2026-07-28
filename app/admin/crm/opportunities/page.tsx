@@ -2,6 +2,8 @@ import { PipelineBoard, type PipelineItem } from '@/components/crm/PipelineBoard
 import { createOpportunityAction, deleteOpportunityAction } from '@/app/admin/crm/actions';
 import { listLeads, listOpportunities } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 const columns = ['New', 'Qualified', 'Vendor Match', 'Proposal', 'Closed'];
 
 function stageFromSalesStage(salesStage: string): string {

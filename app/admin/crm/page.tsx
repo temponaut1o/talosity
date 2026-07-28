@@ -3,6 +3,8 @@ import { MetricCard } from '@/components/crm/MetricCard';
 import { StatusBadge } from '@/components/crm/StatusBadge';
 import { getCrmDashboardState } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CrmDashboardPage() {
   const state = await getCrmDashboardState();
 

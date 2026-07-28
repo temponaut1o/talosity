@@ -4,6 +4,8 @@ import { EmptyState } from '@/components/crm/EmptyState';
 import { listCompanies, listDeploymentPartners } from '@/lib/crm/repository';
 import type { DeploymentPartnerRecord } from '@/lib/crm/types';
 
+export const dynamic = 'force-dynamic';
+
 export default async function PartnersPage() {
   const [partners, companies] = await Promise.all([listDeploymentPartners(), listCompanies()]);
 

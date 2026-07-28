@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createLead, deleteLead, listLeads, updateLead } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const leads = await listLeads();
   return NextResponse.json(leads);

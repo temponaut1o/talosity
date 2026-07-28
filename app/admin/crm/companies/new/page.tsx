@@ -1,6 +1,8 @@
 import { CRMCard } from '@/components/crm/CRMCard';
 import { createCompanyAction } from '@/app/admin/crm/actions';
 
+export const dynamic = 'force-dynamic';
+
 export default function NewCompanyPage() {
   return (
     <div className="space-y-6">

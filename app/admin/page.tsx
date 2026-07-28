@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { countTable } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 const workspaces = [
   { href: '/admin/crm', label: 'Dashboard', description: 'Operational CRM metrics and pipeline visibility.' },
   { href: '/admin/crm', label: 'CRM', description: 'Companies, robots, leads, opportunities, and vendor workflows.' },

@@ -2,6 +2,8 @@ import { createRobotAction } from '@/app/admin/crm/actions';
 import { CRMCard } from '@/components/crm/CRMCard';
 import { listCompanies } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 export default async function NewRobotPage() {
   const companies = await listCompanies();
 

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createRobot, deleteRobot, listRobots, updateRobot } from '@/lib/crm/repository';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const robots = await listRobots();
   return NextResponse.json(robots);
