@@ -1,26 +1,26 @@
 import { NextResponse } from 'next/server';
-import { createRobotRecord, getCrmDashboardState } from '@/lib/crm/data';
+import { createRobot, deleteRobot, listRobots, updateRobot } from '@/lib/crm/repository';
 
 export async function GET() {
-  return NextResponse.json(getCrmDashboardState().robots);
+  const robots = await listRobots();
+  return NextResponse.json(robots);
 }
 
 export async function POST(request: Request) {
   const body = await request.json();
-
-  const robot = createRobotRecord({
-    name: body.name,
-    manufacturer: body.manufacturer,
-    modelNumber: body.modelNumber,
-    category: body.category,
-    industry: body.industry,
-    applications: Array.isArray(body.applications) ? body.applications : [],
-    payload: body.payload,
-    speed: body.speed,
-    aiCapabilities: Array.isArray(body.aiCapabilities) ? body.aiCapabilities : [],
-    safetyCertifications: Array.isArray(body.safetyCertifications) ? body.safetyCertifications : [],
-    supportIncluded: Boolean(body.supportIncluded),
-  });
+  const robot = await createRobot(body);
 
   return NextResponse.json({ success: true, robot });
+}
+
+export async function PATCH(request: Request) {
+  const body = await request.json();
+  const robot = await updateRobot(String(body.id), body);
+  return NextResponse.json({ success: true, robot });
+}
+
+export async function DELETE(request: Request) {
+  const body = await request.json();
+  await deleteRobot(String(body.id));
+  return NextResponse.json({ success: true });
 }

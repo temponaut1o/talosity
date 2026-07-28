@@ -9,12 +9,14 @@ const navItems = [
   { href: '/admin/crm/robots', label: 'Robots' },
   { href: '/admin/crm/leads', label: 'Leads' },
   { href: '/admin/crm/opportunities', label: 'Opportunities' },
-  { href: '/admin/crm/vendors', label: 'Vendors' },
+  { href: '/admin/crm/partners', label: 'Partners' },
+  { href: '/admin/crm/vendors', label: 'Vendor Requests' },
   { href: '/admin/crm/communications', label: 'Communications' },
   { href: '/admin/crm/graph', label: 'Knowledge Graph' },
   { href: '/admin/crm/documents', label: 'Documents' },
   { href: '/admin/crm/analytics', label: 'Analytics' },
   { href: '/admin/crm/settings', label: 'Settings' },
+  { href: '/admin', label: 'System' },
 ];
 
 export function Sidebar() {

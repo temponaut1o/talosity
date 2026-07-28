@@ -1,24 +1,26 @@
 import { NextResponse } from 'next/server';
-import { createLeadRecord, getCrmDashboardState } from '@/lib/crm/data';
+import { createLead, deleteLead, listLeads, updateLead } from '@/lib/crm/repository';
 
 export async function GET() {
-  return NextResponse.json(getCrmDashboardState().leads);
+  const leads = await listLeads();
+  return NextResponse.json(leads);
 }
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const lead = createLeadRecord({
-    name: body.name,
-    company: body.company,
-    email: body.email,
-    phone: body.phone,
-    industry: body.industry,
-    robotInterest: body.robotInterest,
-    facilitySize: body.facilitySize,
-    deploymentTimeline: body.deploymentTimeline,
-    budgetRange: body.budgetRange,
-    status: body.status,
-  });
+  const lead = await createLead(body);
 
   return NextResponse.json({ success: true, lead });
+}
+
+export async function PATCH(request: Request) {
+  const body = await request.json();
+  const lead = await updateLead(String(body.id), body);
+  return NextResponse.json({ success: true, lead });
+}
+
+export async function DELETE(request: Request) {
+  const body = await request.json();
+  await deleteLead(String(body.id));
+  return NextResponse.json({ success: true });
 }

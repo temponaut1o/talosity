@@ -1,41 +1,35 @@
-"use client";
-
-import { useState } from 'react';
 import { CRMCard } from '@/components/crm/CRMCard';
-import { CRMForm } from '@/components/crm/CRMForm';
+import { createCompanyAction } from '@/app/admin/crm/actions';
 
 export default function NewCompanyPage() {
-  const [message, setMessage] = useState<string | null>(null);
-
   return (
     <div className="space-y-6">
       <CRMCard title="New company" description="Create a profile for a manufacturer, integrator, supplier, or customer.">
-        <CRMForm title="Company profile" description="Capture verification status and contact details for the CRM." submitLabel="Create company">
+        <form action={createCompanyAction} className="grid gap-4">
           <div className="grid gap-4 md:grid-cols-2">
-            <input className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Name" />
-            <input className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Website" />
-            <input className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Industry" />
-            <input className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Country" />
-            <select className="rounded-2xl border border-slate-200 px-3 py-2">
-              <option>Manufacturer</option>
-              <option>Integrator</option>
-              <option>Supplier</option>
-              <option>Dealer</option>
-              <option>Customer</option>
-              <option>Partner</option>
+            <input name="name" className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Name" required />
+            <input name="website" className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Website" />
+            <input name="industry" className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Industry" required />
+            <input name="headquarters" className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Country" />
+            <select name="companyType" className="rounded-2xl border border-slate-200 px-3 py-2">
+              <option value="manufacturer">Manufacturer</option>
+              <option value="integrator">Integrator</option>
+              <option value="supplier">Supplier</option>
+              <option value="dealer">Dealer</option>
+              <option value="customer">Customer</option>
+              <option value="partner">Partner</option>
             </select>
-            <select className="rounded-2xl border border-slate-200 px-3 py-2">
-              <option>Pending</option>
-              <option>Verified</option>
-              <option>Suspended</option>
+            <select name="vendorStatus" className="rounded-2xl border border-slate-200 px-3 py-2">
+              <option value="pending">Pending</option>
+              <option value="verified">Verified</option>
+              <option value="suspended">Suspended</option>
             </select>
           </div>
-          <textarea className="min-h-28 w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Description" />
-          <input className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Contact name" />
-          <input className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Contact email" />
-          <input className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Contact phone" />
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">{message ?? 'Validation and submission hooks are ready for Supabase persistence.'}</div>
-        </CRMForm>
+          <input name="contactName" className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Contact name" />
+          <input name="contactEmail" type="email" className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Contact email" />
+          <input name="contactPhone" className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Contact phone" />
+          <button type="submit" className="rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white">Create company</button>
+        </form>
       </CRMCard>
     </div>
   );

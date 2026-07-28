@@ -1,4 +1,4 @@
-export type CompanyType = 'manufacturer' | 'integrator' | 'supplier' | 'customer';
+export type CompanyType = 'manufacturer' | 'integrator' | 'supplier' | 'dealer' | 'customer' | 'partner';
 export type VendorStatus = 'pending' | 'verified' | 'suspended';
 export type ProfileStatus = 'draft' | 'claim-requested' | 'verified' | 'featured';
 export type LeadStatus = 'new' | 'contacted' | 'qualified' | 'vendor-matched' | 'proposal' | 'closed-won' | 'closed-lost' | 'visitor' | 'opportunity' | 'follow-up' | 'converted';
@@ -93,9 +93,38 @@ export interface NewsRecord {
 }
 
 export interface AnalyticsSnapshot {
+  id?: string;
   label: string;
   value: string;
   trend: string;
+  capturedAt?: string;
+}
+
+export interface CommunicationRecord {
+  id: string;
+  channel: 'email' | 'call' | 'meeting' | 'note' | 'task';
+  subject: string;
+  relatedType: 'Lead' | 'Company' | 'Opportunity' | 'Vendor';
+  relatedName: string;
+  followUp: string;
+  createdAt: string;
+}
+
+export interface DocumentRecord {
+  id: string;
+  name: string;
+  kind: string;
+  filePath: string;
+  createdAt: string;
+}
+
+export interface DeploymentPartnerRecord {
+  id: string;
+  companyId: string;
+  companyName: string;
+  name: string;
+  serviceRegion: string;
+  createdAt: string;
 }
 
 export interface CrmDashboardState {

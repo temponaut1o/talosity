@@ -1,27 +1,26 @@
 import { NextResponse } from 'next/server';
-import { createCompanyRecord, getCrmDashboardState } from '@/lib/crm/data';
+import { createCompany, deleteCompany, listCompanies, updateCompany } from '@/lib/crm/repository';
 
 export async function GET() {
-  return NextResponse.json(getCrmDashboardState().companies);
+  const companies = await listCompanies();
+  return NextResponse.json(companies);
 }
 
 export async function POST(request: Request) {
   const body = await request.json();
-
-  const company = createCompanyRecord({
-    name: body.name,
-    companyType: body.companyType,
-    industry: body.industry,
-    website: body.website,
-    contactName: body.contactName,
-    contactEmail: body.contactEmail,
-    contactPhone: body.contactPhone,
-    vendorStatus: body.vendorStatus ?? 'pending',
-    profileStatus: body.profileStatus ?? 'draft',
-    headquarters: body.headquarters ?? body.country ?? 'Unknown',
-    foundedYear: Number(body.foundedYear ?? new Date().getFullYear()),
-    annualRevenue: body.annualRevenue ?? 'Undisclosed',
-  });
+  const company = await createCompany(body);
 
   return NextResponse.json({ success: true, company });
+}
+
+export async function PATCH(request: Request) {
+  const body = await request.json();
+  const company = await updateCompany(String(body.id), body);
+  return NextResponse.json({ success: true, company });
+}
+
+export async function DELETE(request: Request) {
+  const body = await request.json();
+  await deleteCompany(String(body.id));
+  return NextResponse.json({ success: true });
 }

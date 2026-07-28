@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getCrmDashboardState } from '@/lib/crm/data';
+import { getCrmDashboardState } from '@/lib/crm/repository';
 
 export async function GET() {
-  return NextResponse.json(getCrmDashboardState());
+  const state = await getCrmDashboardState();
+  return NextResponse.json(state);
 }

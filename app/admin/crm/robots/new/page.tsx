@@ -1,25 +1,33 @@
-"use client";
-
+import { createRobotAction } from '@/app/admin/crm/actions';
 import { CRMCard } from '@/components/crm/CRMCard';
-import { CRMForm } from '@/components/crm/CRMForm';
+import { listCompanies } from '@/lib/crm/repository';
 
-export default function NewRobotPage() {
+export default async function NewRobotPage() {
+  const companies = await listCompanies();
+
   return (
     <div className="space-y-6">
       <CRMCard title="New robot" description="Create or update robot profiles for the Talosity robotics platform.">
-        <CRMForm title="Robot profile" description="Capture product and deployment data for commercial robotics teams." submitLabel="Create robot">
+        <form action={createRobotAction} className="grid gap-4">
           <div className="grid gap-4 md:grid-cols-2">
-            <input className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Robot name" />
-            <input className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Manufacturer" />
-            <input className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Category" />
-            <input className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Industry" />
-            <input className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Payload" />
-            <input className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Runtime" />
+            <select name="companyId" required className="rounded-2xl border border-slate-200 px-3 py-2">
+              <option value="">Manufacturer company</option>
+              {companies.map((company) => (
+                <option key={company.id} value={company.id}>{company.name}</option>
+              ))}
+            </select>
+            <input name="name" className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Robot name" required />
+            <input name="modelNumber" className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Model number" />
+            <input name="category" className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Category" required />
+            <input name="industry" className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Industry" />
+            <input name="payload" className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Payload" />
+            <input name="speed" className="rounded-2xl border border-slate-200 px-3 py-2" placeholder="Runtime" />
           </div>
-          <textarea className="min-h-28 w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Navigation / sensors / AI capabilities" />
-          <input className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="RaaS availability" />
-          <input className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Documents or image references" />
-        </CRMForm>
+          <input name="applications" className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Applications (comma separated)" />
+          <input name="aiCapabilities" className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="AI capabilities (comma separated)" />
+          <input name="safetyCertifications" className="w-full rounded-2xl border border-slate-200 px-3 py-2" placeholder="Safety certifications (comma separated)" />
+          <button type="submit" className="rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white">Create robot</button>
+        </form>
       </CRMCard>
     </div>
   );

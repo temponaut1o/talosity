@@ -1,25 +1,22 @@
-'use client';
-
 import Link from 'next/link';
-import { useMemo } from 'react';
 import { MetricCard } from '@/components/crm/MetricCard';
 import { StatusBadge } from '@/components/crm/StatusBadge';
-import { getCrmDashboardState } from '@/lib/crm/data';
+import { getCrmDashboardState } from '@/lib/crm/repository';
 
-export default function CrmDashboardPage() {
-  const state = useMemo(() => getCrmDashboardState(), []);
+export default async function CrmDashboardPage() {
+  const state = await getCrmDashboardState();
 
   const cards = [
-    { label: 'Companies', value: state.companies.length },
-    { label: 'Robots', value: state.robots.length },
-    { label: 'Leads', value: state.leads.length },
+    { label: 'Companies', value: state.metrics.totalCompanies },
+    { label: 'Robots', value: state.metrics.totalRobots },
+    { label: 'Leads', value: state.metrics.totalLeads },
     { label: 'Opportunities', value: state.opportunities.length },
-    { label: 'Vendors', value: state.vendorRequests.length },
+    { label: 'Partners', value: state.metrics.totalVendors },
   ];
 
   const actions = [
-    { href: '/admin/crm/companies', label: 'Add Company' },
-    { href: '/admin/crm/robots', label: 'Add Robot' },
+    { href: '/admin/crm/companies/new', label: 'Add Company' },
+    { href: '/admin/crm/robots/new', label: 'Add Robot' },
     { href: '/admin/crm/leads', label: 'Create Lead' },
     { href: '/admin/crm/opportunities', label: 'Create Opportunity' },
   ];

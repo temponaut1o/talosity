@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import { CRMCard } from '@/components/crm/CRMCard';
-import { getLeadById } from '@/lib/crm/data';
+import { getLeadById } from '@/lib/crm/repository';
 
 interface LeadDetailPageProps {
   params: { id: string };
 }
 
-export default function LeadDetailPage({ params }: LeadDetailPageProps) {
-  const lead = getLeadById(params.id);
+export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
+  const lead = await getLeadById(params.id);
 
   if (!lead) {
     return (
