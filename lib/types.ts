@@ -34,3 +34,11 @@ export interface Robot {
   autonomy: string;
   description: string;
 }
+
+export type {
+  CompanyRecord,
+  LeadRecord,
+  OpportunityRecord,
+  RobotRecord,
+  VendorRequestRecord,
+} from '@/lib/crm/types';
