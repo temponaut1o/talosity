@@ -15,7 +15,7 @@ export default function CrmLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col gap-4">
-          <Header userName="Alex Rivera" searchValue={searchValue} onSearchChange={setSearchValue} />
+          <Header userName="Luis Sanchez, CEO " searchValue={searchValue} onSearchChange={setSearchValue} />
           <div className="lg:hidden">
             <Sidebar />
           </div>
