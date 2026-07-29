@@ -16,5 +16,5 @@ export function getSupabaseServerClient(): SupabaseClient | null {
     db: {
       schema: 'crm',
     },
-  });
+  }) as any;
 }
