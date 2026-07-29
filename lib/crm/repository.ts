@@ -411,7 +411,7 @@ export async function listLeads(): Promise<LeadRecord[]> {
   const supabase = getClient();
   const { data, error } = await supabase
     .from(table('leads'))
-    .select('*, company:companies(name)')
+    .select('*, company:companies!leads_company_id_fkey(name)')
     .order('created_at', { ascending: false });
   if (error) {
     throw error;
@@ -423,7 +423,7 @@ export async function getLeadById(id: string): Promise<LeadRecord | null> {
   const supabase = getClient();
   const { data, error } = await supabase
     .from(table('leads'))
-    .select('*, company:companies(name)')
+    .select('*, company:companies!leads_company_id_fkey(name)')
     .eq('id', id)
     .maybeSingle();
   if (error) {
@@ -456,7 +456,7 @@ export async function createLead(input: unknown): Promise<LeadRecord> {
       status: parsed.status,
       score: parsed.score,
     })
-    .select('*, company:companies(name)')
+    .select('*, company:companies!leads_company_id_fkey(name)')
     .single();
   if (error) {
     throw error;
@@ -486,7 +486,7 @@ export async function updateLead(id: string, input: unknown): Promise<LeadRecord
       score: parsed.score,
     })
     .eq('id', id)
-    .select('*, company:companies(name)')
+    .select('*, company:companies!leads_company_id_fkey(name)')
     .single();
 
   if (error) {
