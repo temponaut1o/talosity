@@ -1,5 +1,7 @@
 'use client';
 
+import { startTransition, useEffect, useState } from 'react';
+import { updateOpportunityStageAction } from '@/app/admin/crm/actions';
 import { StatusBadge } from '@/components/crm/StatusBadge';
 
 export interface PipelineItem {
@@ -15,14 +17,26 @@ export interface PipelineItem {
 interface PipelineBoardProps {
   columns: string[];
   items: PipelineItem[];
-  onStageChange: (id: string, stage: string) => void;
 }
 
-export function PipelineBoard({ columns, items, onStageChange }: PipelineBoardProps) {
+export function PipelineBoard({ columns, items }: PipelineBoardProps) {
+  const [stageById, setStageById] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    setStageById(Object.fromEntries(items.map((item) => [item.id, item.stage])));
+  }, [items]);
+
+  function handleStageChange(id: string, stage: string) {
+    setStageById((current) => ({ ...current, [id]: stage }));
+    startTransition(() => {
+      void updateOpportunityStageAction({ id, salesStage: stage });
+    });
+  }
+
   return (
     <div className="grid gap-4 xl:grid-cols-5 2xl:grid-cols-5">
       {columns.map((column) => {
-        const columnItems = items.filter((item) => item.stage === column);
+        const columnItems = items.filter((item) => (stageById[item.id] ?? item.stage) === column);
         return (
           <section key={column} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
             <div className="mb-3 flex items-center justify-between">
@@ -40,8 +54,8 @@ export function PipelineBoard({ columns, items, onStageChange }: PipelineBoardPr
                     <StatusBadge status={item.stage} />
                   </div>
                   <select
-                    value={item.stage}
-                    onChange={(event) => onStageChange(item.id, event.target.value)}
+                    value={stageById[item.id] ?? item.stage}
+                    onChange={(event) => handleStageChange(item.id, event.target.value)}
                     className="mt-3 w-full rounded-lg border border-slate-300 px-2 py-1 text-xs"
                   >
                     {columns.map((next) => (

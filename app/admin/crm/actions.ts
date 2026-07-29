@@ -16,6 +16,7 @@ import {
   deleteOpportunity,
   deleteRobot,
   deleteVendorRequest,
+  updateOpportunity,
   updateLead,
   updateVendorRequest,
 } from '@/lib/crm/repository';
@@ -126,6 +127,12 @@ export async function createOpportunityAction(formData: FormData) {
 
 export async function deleteOpportunityAction(formData: FormData) {
   await deleteOpportunity(String(formData.get('id') ?? ''));
+  revalidatePath('/admin/crm/opportunities');
+  revalidatePath('/admin/crm');
+}
+
+export async function updateOpportunityStageAction(input: { id: string; salesStage: string }) {
+  await updateOpportunity(input.id, { salesStage: input.salesStage });
   revalidatePath('/admin/crm/opportunities');
   revalidatePath('/admin/crm');
 }

@@ -130,8 +130,8 @@ type Database = {
       opportunities: unknown;
       vendor_requests: unknown;
       deployment_partners: unknown;
-      crm_activities: unknown;
-      robot_documents: unknown;
+      communications: unknown;
+      documents: unknown;
       analytics_snapshots: unknown;
     };
   };
@@ -682,8 +682,8 @@ export async function deleteDeploymentPartner(id: string): Promise<void> {
 export async function listCommunications(): Promise<CommunicationRecord[]> {
   const supabase = getClient();
   const { data, error } = await supabase
-    .from(table('crm_activities'))
-    .select('*')
+    .from(table('communications'))
+    .select('id, activity_type:channel, summary:subject, related_type, related_name, follow_up, created_at')
     .order('created_at', { ascending: false })
     .limit(100);
   if (error) {
@@ -708,10 +708,10 @@ export async function createCommunication(input: unknown): Promise<Communication
   const supabase = getClient();
   const parsed = communicationSchema.parse(input);
   const { data, error } = await supabase
-    .from(table('crm_activities'))
+    .from(table('communications'))
     .insert({
-      activity_type: parsed.channel,
-      summary: parsed.subject,
+      channel: parsed.channel,
+      subject: parsed.subject,
       related_type: parsed.relatedType,
       related_name: parsed.relatedName,
       follow_up: parsed.followUp || null,
@@ -719,7 +719,7 @@ export async function createCommunication(input: unknown): Promise<Communication
       company_id: parsed.companyId,
       robot_id: parsed.robotId,
     })
-    .select('*')
+    .select('id, activity_type:channel, summary:subject, related_type, related_name, follow_up, created_at')
     .single();
   if (error) {
     throw error;
@@ -730,7 +730,7 @@ export async function createCommunication(input: unknown): Promise<Communication
 export async function listDocuments(): Promise<DocumentRecord[]> {
   const supabase = getClient();
   const { data, error } = await supabase
-    .from(table('robot_documents'))
+    .from(table('documents'))
     .select('*')
     .order('created_at', { ascending: false })
     .limit(100);
@@ -744,7 +744,7 @@ export async function createDocument(input: unknown): Promise<DocumentRecord> {
   const supabase = getClient();
   const parsed = documentSchema.parse(input);
   const { data, error } = await supabase
-    .from(table('robot_documents'))
+    .from(table('documents'))
     .insert({
       robot_id: parsed.robotId,
       title: parsed.name,
