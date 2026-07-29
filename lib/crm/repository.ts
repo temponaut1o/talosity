@@ -121,8 +121,26 @@ function formatDate(value: string | null | undefined): string {
   return new Date(value).toISOString().slice(0, 10);
 }
 
-function table(name: string) {
-  return `crm.${name}`;
+type Database = {
+  crm: {
+    Tables: {
+      companies: unknown;
+      robots: unknown;
+      leads: unknown;
+      opportunities: unknown;
+      vendor_requests: unknown;
+      deployment_partners: unknown;
+      crm_activities: unknown;
+      robot_documents: unknown;
+      analytics_snapshots: unknown;
+    };
+  };
+};
+
+type CrmTable = keyof Database['crm']['Tables'];
+
+function table<T extends CrmTable>(name: T): T {
+  return name;
 }
 
 type Row = Record<string, unknown>;
@@ -816,7 +834,7 @@ export async function getCrmDashboardState(): Promise<CrmDashboardState> {
 
 export async function countTable(entity: string): Promise<number> {
   const supabase = getClient();
-  const { count, error } = await supabase.from(table(entity)).select('*', { count: 'exact', head: true });
+  const { count, error } = await supabase.from(table(entity as CrmTable)).select('*', { count: 'exact', head: true });
   if (error) {
     throw error;
   }
