@@ -89,6 +89,7 @@ Local test:
 npm run dev
 curl http://localhost:3000/api/test-seo-embedding
 curl http://localhost:3000/api/test-seo-status
+curl http://localhost:3000/api/admin/seo/seed
 ```
 
 Supabase verification queries:
@@ -96,6 +97,8 @@ Supabase verification queries:
 ```sql
 select * from public.seo_pages;
 select * from public.seo_embeddings;
+select count(*) from public.seo_pages;
+select count(*) from public.seo_embeddings;
 ```
 
 Returned rows confirm ingestion and embedding persistence for SEO pages.
