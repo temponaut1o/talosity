@@ -4,7 +4,10 @@ import { seedTalositySeo } from '@/lib/seo/seed-talosity-seo';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  if (process.env.NODE_ENV === 'production') {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const allowProductionSeed = process.env.SEO_PRODUCTION_SEED_ENABLED === 'true';
+
+  if (isProduction && !allowProductionSeed) {
     return NextResponse.json({ error: 'Not Found' }, { status: 404 });
   }
 

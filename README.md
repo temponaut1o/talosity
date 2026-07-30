@@ -90,6 +90,7 @@ npm run dev
 curl http://localhost:3000/api/test-seo-embedding
 curl http://localhost:3000/api/test-seo-status
 curl http://localhost:3000/api/admin/seo/seed
+curl http://localhost:3000/api/admin/seo/status
 ```
 
 Supabase verification queries:
@@ -102,6 +103,11 @@ select count(*) from public.seo_embeddings;
 ```
 
 Returned rows confirm ingestion and embedding persistence for SEO pages.
+
+Production seed safeguard:
+
+- `api/admin/seo/seed` is blocked by default in production.
+- Set `SEO_PRODUCTION_SEED_ENABLED=true` only when you need controlled production seeding, then disable it after ingestion.
 
 ### Production Readiness Checklist
 
