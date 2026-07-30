@@ -136,10 +136,18 @@ export async function generateSeoEmbedding(input: GenerateSeoEmbeddingInput): Pr
   const text = buildEmbeddingText(input);
   const openai = getOpenAiClient();
 
-  const response = await openai.embeddings.create({
-    model: SEO_EMBEDDING_MODEL,
-    input: text,
-  });
+  let response;
+  try {
+    response = await openai.embeddings.create({
+      model: SEO_EMBEDDING_MODEL,
+      input: text,
+    });
+  } catch (error) {
+    console.error('[seo-embeddings] OpenAI API error', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+    throw new Error(`OpenAI embedding generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 
   const embedding = response.data[0]?.embedding;
   if (!embedding) {
@@ -149,6 +157,11 @@ export async function generateSeoEmbedding(input: GenerateSeoEmbeddingInput): Pr
   if (embedding.length !== SEO_EMBEDDING_DIMENSIONS) {
     throw new Error(`Expected ${SEO_EMBEDDING_DIMENSIONS} embedding dimensions, received ${embedding.length}.`);
   }
+
+  console.log('[seo-embeddings] embedding generated', {
+    model: SEO_EMBEDDING_MODEL,
+    dimensions: embedding.length,
+  });
 
   return embedding;
 }
@@ -163,7 +176,11 @@ export async function upsertSeoPageEmbedding(pageId: string): Promise<SeoEmbeddi
     .single<SeoPageRow>();
 
   if (pageError) {
-    throw new Error(`Failed to load SEO page ${pageId}: ${pageError.message}`);
+    console.error('[seo-embeddings] Supabase error loading seo_pages', {
+      pageId,
+      message: pageError.message,
+    });
+    throw new Error(`Supabase seo_pages fetch failed for pageId ${pageId}: ${pageError.message}`);
   }
 
   const [companyResult, robotResult, industryResult] = await Promise.all([
@@ -179,28 +196,49 @@ export async function upsertSeoPageEmbedding(pageId: string): Promise<SeoEmbeddi
   ]);
 
   if (companyResult.error) {
-    throw new Error(`Failed to load related company for SEO page ${pageId}: ${companyResult.error.message}`);
+    console.error('[seo-embeddings] Supabase error loading company context', {
+      pageUrl: page.page_url,
+      message: companyResult.error.message,
+    });
+    throw new Error(`Supabase company context fetch failed for pageUrl ${page.page_url}: ${companyResult.error.message}`);
   }
 
   if (robotResult.error) {
-    throw new Error(`Failed to load related robot for SEO page ${pageId}: ${robotResult.error.message}`);
+    console.error('[seo-embeddings] Supabase error loading robot context', {
+      pageUrl: page.page_url,
+      message: robotResult.error.message,
+    });
+    throw new Error(`Supabase robot context fetch failed for pageUrl ${page.page_url}: ${robotResult.error.message}`);
   }
 
   if (industryResult.error) {
-    throw new Error(`Failed to load related industry for SEO page ${pageId}: ${industryResult.error.message}`);
+    console.error('[seo-embeddings] Supabase error loading industry context', {
+      pageUrl: page.page_url,
+      message: industryResult.error.message,
+    });
+    throw new Error(`Supabase industry context fetch failed for pageUrl ${page.page_url}: ${industryResult.error.message}`);
   }
 
   const headings = extractHeadings(page.page_content, page.schema_markup);
-  const embedding = await generateSeoEmbedding({
-    title: page.optimized_title ?? page.page_url,
-    targetKeyword: page.target_keyword ?? undefined,
-    companyName: companyResult.data?.name,
-    robotName: robotResult.data?.name,
-    industryName: industryResult.data?.name ?? companyResult.data?.industry ?? robotResult.data?.industry ?? undefined,
-    categoryLabel: robotResult.data?.category,
-    headings,
-    pageContent: page.page_content ?? undefined,
-  });
+  let embedding: number[];
+  try {
+    embedding = await generateSeoEmbedding({
+      title: page.optimized_title ?? page.page_url,
+      targetKeyword: page.target_keyword ?? undefined,
+      companyName: companyResult.data?.name,
+      robotName: robotResult.data?.name,
+      industryName: industryResult.data?.name ?? companyResult.data?.industry ?? robotResult.data?.industry ?? undefined,
+      categoryLabel: robotResult.data?.category,
+      headings,
+      pageContent: page.page_content ?? undefined,
+    });
+  } catch (error) {
+    console.error('[seo-embeddings] OpenAI API error while building page embedding', {
+      pageUrl: page.page_url,
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+    throw new Error(`OpenAI failure for pageUrl ${page.page_url}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 
   const { data: savedEmbedding, error: embeddingError } = await supabase
     .from('seo_embeddings')
@@ -217,8 +255,18 @@ export async function upsertSeoPageEmbedding(pageId: string): Promise<SeoEmbeddi
     .single<EmbeddingRow>();
 
   if (embeddingError) {
-    throw new Error(`Failed to store SEO embedding for page ${pageId}: ${embeddingError.message}`);
+    console.error('[seo-embeddings] Supabase error upserting seo_embeddings', {
+      pageUrl: page.page_url,
+      pageId,
+      message: embeddingError.message,
+    });
+    throw new Error(`Supabase seo_embeddings upsert failed for pageUrl ${page.page_url}: ${embeddingError.message}`);
   }
+
+  console.log('[seo-embeddings] Supabase insert success', {
+    pageId: savedEmbedding.page_id,
+    model: savedEmbedding.model,
+  });
 
   return toSeoEmbeddingRecord(savedEmbedding);
 }

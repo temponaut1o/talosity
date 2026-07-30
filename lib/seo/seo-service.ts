@@ -156,7 +156,31 @@ export async function upsertSeoMetadata(input: UpsertSeoMetadataInput): Promise<
     .single<SeoPageRow>();
 
   if (error) {
+    console.error('[seo-service] Supabase error upserting seo_pages', {
+      pageUrl: parsed.pageUrl,
+      message: error.message,
+    });
     throw new Error(`Failed to upsert SEO metadata for ${parsed.pageUrl}: ${error.message}`);
+  }
+
+  console.log('[seo-service] SEO page id created', {
+    pageId: data.id,
+    pageUrl: parsed.pageUrl,
+  });
+
+  const { data: pageVerification, error: pageVerificationError } = await supabase
+    .from('seo_pages')
+    .select('id')
+    .eq('id', data.id)
+    .single<{ id: string }>();
+
+  if (pageVerificationError || !pageVerification?.id) {
+    console.error('[seo-service] Supabase error verifying seo_pages insert', {
+      pageId: data.id,
+      pageUrl: parsed.pageUrl,
+      message: pageVerificationError?.message ?? 'Record not found after upsert.',
+    });
+    throw new Error(`SEO page insert verification failed for ${parsed.pageUrl}.`);
   }
 
   let embedding = null;
@@ -166,6 +190,32 @@ export async function upsertSeoMetadata(input: UpsertSeoMetadataInput): Promise<
     embedding = await upsertSeoPageEmbedding(data.id);
   } catch (error) {
     embeddingError = error instanceof Error ? error.message : 'Unknown embedding failure.';
+    console.error('[seo-service] embedding upsert failed', {
+      pageUrl: parsed.pageUrl,
+      pageId: data.id,
+      message: embeddingError,
+    });
+    throw new Error(`SEO page inserted but embedding insert failed for ${parsed.pageUrl}: ${embeddingError}`);
+  }
+
+  if (!embedding) {
+    throw new Error(`SEO page inserted but embedding insert failed for ${parsed.pageUrl}: No embedding record returned.`);
+  }
+
+  const { data: embeddingVerification, error: embeddingVerificationError } = await supabase
+    .from('seo_embeddings')
+    .select('page_id, model, embedding')
+    .eq('page_id', data.id)
+    .eq('model', embedding.model)
+    .single<{ page_id: string; model: string; embedding: string | number[] }>();
+
+  if (embeddingVerificationError || !embeddingVerification?.page_id || !embeddingVerification.model || !embeddingVerification.embedding) {
+    console.error('[seo-service] Supabase error verifying seo_embeddings insert', {
+      pageId: data.id,
+      pageUrl: parsed.pageUrl,
+      message: embeddingVerificationError?.message ?? 'Embedding record not found after upsert.',
+    });
+    throw new Error(`Embedding insert verification failed for ${parsed.pageUrl}.`);
   }
 
   return {

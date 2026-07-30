@@ -81,6 +81,43 @@ The platform now includes an additive SEO intelligence layer that extends the ex
 4. Set `OPENAI_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` in the deployment environment before using server-side SEO automation.
 5. Use the server-only SEO services in `lib/seo/seo-service.ts` and `lib/ai/embeddings.ts` for metadata upserts and embedding generation.
 
+### SEO Intelligence Layer Verification
+
+Local test:
+
+```bash
+npm run dev
+curl http://localhost:3000/api/test-seo-embedding
+curl http://localhost:3000/api/test-seo-status
+```
+
+Supabase verification queries:
+
+```sql
+select * from public.seo_pages;
+select * from public.seo_embeddings;
+```
+
+Returned rows confirm ingestion and embedding persistence for SEO pages.
+
+### Production Readiness Checklist
+
+Database:
+- [x] migration applied
+- [x] vector extension enabled
+- [x] RPC available
+
+Application:
+- [x] OpenAI SDK installed
+- [x] environment variables configured
+- [x] embedding generation tested
+
+Production:
+- [ ] protect test routes
+- [ ] deploy to Vercel
+- [ ] verify Vercel environment variables
+- [ ] check Vercel logs
+
 ### Development
 
 ```bash
