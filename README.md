@@ -15,6 +15,7 @@ A B2B platform for discovering commercial robotics solutions. Focus on real busi
 - **Frontend**: Next.js 14, React 18, TypeScript
 - **Styling**: Tailwind CSS
 - **Database**: PostgreSQL (Supabase)
+- **AI**: OpenAI `text-embedding-3-small`
 - **Deployment**: Vercel
 - **Icons**: Lucide React
 - **Validation**: Zod
@@ -48,13 +49,37 @@ Create `.env.local`:
 ```
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+OPENAI_API_KEY=your_openai_api_key
 ```
+
+`SUPABASE_SERVICE_ROLE_KEY` and `OPENAI_API_KEY` are server-only. Do not expose them in browser code.
 
 ### Database Setup
 
-1. Create a Supabase project at https://supabase.com
-2. Run the migrations in `supabase/migrations/`
-3. Seed the database with sample data: `npm run seed`
+1. Use the existing Talosity Supabase project.
+2. Run the additive migrations in `supabase/migrations/` in timestamp order.
+3. Apply the SEO intelligence migration `20260730110000_seo_intelligence_layer.sql` after the existing CRM migrations.
+4. Confirm `vector` is available in the target database. The migration uses `CREATE EXTENSION IF NOT EXISTS vector;` to avoid duplication.
+5. Seed or import SEO pages, keyword clusters, and recommendation workflows through server-side services.
+
+### SEO Intelligence Layer
+
+The platform now includes an additive SEO intelligence layer that extends the existing CRM model without replacing it.
+
+- `public.seo_pages` stores indexable Talosity page metadata and links to `crm.companies`, `crm.robots`, and `crm.industries` through typed nullable foreign keys.
+- `public.seo_embeddings` stores pgvector embeddings separately from page metadata for future model upgrades.
+- `public.seo_keyword_clusters` supports semantic keyword clustering and similarity matching through the `match_seo_clusters` RPC.
+- `public.seo_recommendations` stores AI-generated suggestions separately from published metadata.
+- `public.seo_audit_events` records metadata updates, publishing transitions, and recommendation changes over time.
+
+### Migration Instructions
+
+1. Ensure the existing CRM migrations are already applied.
+2. Apply `20260730110000_seo_intelligence_layer.sql` to the existing Talosity database.
+3. Verify RLS policies in Supabase after migration.
+4. Set `OPENAI_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` in the deployment environment before using server-side SEO automation.
+5. Use the server-only SEO services in `lib/seo/seo-service.ts` and `lib/ai/embeddings.ts` for metadata upserts and embedding generation.
 
 ### Development
 
